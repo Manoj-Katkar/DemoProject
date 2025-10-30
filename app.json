@@ -19,10 +19,9 @@
         "NSCameraUsageDescription": "This app needs access to camera to take photos and videos.",
         "NSPhotoLibraryUsageDescription": "This app needs access to photo library to select images and videos.",
         "NSMicrophoneUsageDescription": "This app needs access to microphone to record videos.",
-        "UIBackgroundModes": [
-          "remote-notification"
-        ]
-      }
+        "UIBackgroundModes": ["remote-notification", "remote-notification"]
+      },
+      "bundleIdentifier": "com.m2000202.DemoApp"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,8 +37,16 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.RECEIVE_BOOT_COMPLETED",
+        "com.google.android.c2dm.permission.RECEIVE",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
         "com.google.android.c2dm.permission.RECEIVE"
-      ]
+      ],
+      "package": "com.m2000202.DemoApp"
     },
     "web": {
       "bundler": "metro",
@@ -47,7 +54,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

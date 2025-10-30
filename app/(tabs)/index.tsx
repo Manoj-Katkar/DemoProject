@@ -1826,29 +1826,152 @@
 
 
 
+// import React, { useState } from 'react';
+// import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// import ImagePicker from 'react-native-image-crop-picker';
+
+// const index = () => {
+//   const [form, setForm] = useState({
+//     uploadedImage: '',
+//   });
+
+//   const handleBrowse = async () => {
+//     try {
+//       const image = await ImagePicker.openPicker({
+//         width: 300,
+//         height: 400,
+//         cropping: true,
+//       });
+//       console.log('Selected Image:', image);
+//       setForm((prev) => ({ ...prev, uploadedImage: image.path }));
+//     } catch (error) {
+//       if (
+//         error instanceof Error &&
+//         error.message === 'User cancelled image selection'
+//       ) {
+//         console.log('Image selection was cancelled by the user.');
+//       } else {
+//         console.error('Error selecting image:', error);
+//       }
+//     }
+//   };
+
+//   const handleOpenCamera = async () => {
+//     try {
+//       const image = await ImagePicker.openCamera({
+//         width: 300,
+//         height: 400,
+//         cropping: true,
+//       });
+//       setForm((prev) => ({ ...prev, uploadedImage: image.path }));
+//     } catch (error) {
+//       if (
+//         error instanceof Error &&
+//         error.message === 'User cancelled image selection'
+//       ) {
+//         console.log('Camera operation was cancelled by the user.');
+//       } else {
+//         console.error('Error capturing image:', error);
+//       }
+//     }
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Image Picker</Text>
+
+//       <View style={styles.buttonContainer}>
+//         <TouchableOpacity style={styles.button} onPress={handleBrowse}>
+//           <Text style={styles.buttonText}>Open Gallery</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={styles.button} onPress={handleOpenCamera}>
+//           <Text style={styles.buttonText}>Open Camera</Text>
+//         </TouchableOpacity>
+//       </View>
+
+//       {form.uploadedImage ? (
+//         <View style={styles.imageContainer}>
+//           <Text style={styles.imageLabel}>Selected Image:</Text>
+//           <Image
+//             source={{ uri: form.uploadedImage }}
+//             style={styles.image}
+//             resizeMode="cover"
+//           />
+//         </View>
+//       ) : (
+//         <Text style={styles.placeholderText}>No image selected</Text>
+//       )}
+//     </View>
+//   );
+// };
+
+
+import { ResizeMode, Video } from 'expo-av';
+import * as ExpoImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
-const index = () => {
-  const [form, setForm] = useState({
-    uploadedImage: '',
-  });
 
-  const handleBrowse = async () => {
+const { width } = Dimensions.get('window');
+const CARD_PADDING = 20;
+const CARD_GAP = 16;
+
+const index = () => {
+  const [cropPickerImage, setCropPickerImage] = useState('');
+  const [expoPickerImage, setExpoPickerImage] = useState('');
+    const [cropPickerVideo, setCropPickerVideo] = useState('');
+      // Video Picker handlers
+  const handleCropPickerVideoCamera = async () => {
+    try {
+      const video = await ImagePicker.openCamera({
+        mediaType: 'video',
+        compressVideoPreset: 'HighestQuality',
+      });
+      console.log('React Native Crop Picker - Video Camera:', video);
+      setCropPickerVideo(video.path);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'User cancelled image selection') {
+        console.log('Video recording was cancelled by the user.');
+      } else {
+        console.error('Error recording video:', error);
+      }
+    }
+  };
+
+    const handleCropPickerVideoGallery = async () => {
+    try {
+      const video = await ImagePicker.openPicker({
+        mediaType: 'video',
+        compressVideoPreset: 'HighestQuality',
+      });
+      console.log('React Native Crop Picker - Video Gallery:', video);
+      setCropPickerVideo(video.path);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'User cancelled image selection') {
+        console.log('Video selection was cancelled by the user.');
+      } else {
+        console.error('Error selecting video:', error);
+      }
+    }
+  };
+
+  // React Native Image Crop Picker handlers
+  const handleCropPickerGallery = async () => {
     try {
       const image = await ImagePicker.openPicker({
-        width: 300,
-        height: 400,
+        width: 1920,
+        height: 2560,
         cropping: true,
+        compressImageQuality: 1,
+        compressImageMaxWidth: 1920,
+        compressImageMaxHeight: 2560,
       });
-      console.log('Selected Image:', image);
-      setForm((prev) => ({ ...prev, uploadedImage: image.path }));
+      console.log('React Native Crop Picker - Gallery:', image);
+      setCropPickerImage(image.path);
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === 'User cancelled image selection'
-      ) {
+      if (error instanceof Error && error.message === 'User cancelled image selection') {
         console.log('Image selection was cancelled by the user.');
       } else {
         console.error('Error selecting image:', error);
@@ -1856,19 +1979,22 @@ const index = () => {
     }
   };
 
-  const handleOpenCamera = async () => {
+  const handleCropPickerCamera = async () => {
     try {
       const image = await ImagePicker.openCamera({
-        width: 300,
-        height: 400,
+        width: 1920,
+        height: 2560,
         cropping: true,
+        compressImageQuality: 1,
+        compressImageMaxWidth: 1920,
+        compressImageMaxHeight: 2560,
+        includeExif: true,
+        forceJpg: false,
       });
-      setForm((prev) => ({ ...prev, uploadedImage: image.path }));
+      console.log('React Native Crop Picker - Camera:', image);
+      setCropPickerImage(image.path);
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === 'User cancelled image selection'
-      ) {
+      if (error instanceof Error && error.message === 'User cancelled image selection') {
         console.log('Camera operation was cancelled by the user.');
       } else {
         console.error('Error capturing image:', error);
@@ -1876,92 +2002,512 @@ const index = () => {
     }
   };
 
+  // Expo Image Picker handlers
+  const handleExpoPickerGallery = async () => {
+    try {
+      const result = await ExpoImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log('Expo Image Picker - Gallery:', result);
+
+      if (!result.canceled) {
+        setExpoPickerImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error selecting image with Expo:', error);
+    }
+  };
+
+  const handleExpoPickerCamera = async () => {
+    try {
+      // Request camera permissions
+      const permissionResult = await ExpoImagePicker.requestCameraPermissionsAsync();
+      
+      if (permissionResult.granted === false) {
+        alert('Camera permission is required!');
+        return;
+      }
+
+      const result = await ExpoImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log('Expo Image Picker - Camera:', result);
+
+      if (!result.canceled) {
+        setExpoPickerImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error capturing image with Expo:', error);
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Image Picker</Text>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBrowse}>
-          <Text style={styles.buttonText}>Open Gallery</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={handleOpenCamera}>
-          <Text style={styles.buttonText}>Open Camera</Text>
-        </TouchableOpacity>
+    <ScrollView 
+      style={styles.scrollView} 
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Media Picker Studio</Text>
+        <Text style={styles.headerSubtitle}>Compare & choose the best library for your needs</Text>
       </View>
 
-      {form.uploadedImage ? (
-        <View style={styles.imageContainer}>
-          <Text style={styles.imageLabel}>Selected Image:</Text>
-          <Image
-            source={{ uri: form.uploadedImage }}
-            style={styles.image}
-            resizeMode="cover"
-          />
+      {/* React Native Image Crop Picker Section */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardTitleContainer}>
+            <Text style={styles.cardTitle}>🔧 React Native Crop Picker</Text>
+            <Text style={styles.cardSubtitle}>Native performance with advanced features</Text>
+          </View>
+          <View style={styles.nativeBadge}>
+            <Text style={styles.badgeText}>NATIVE</Text>
+          </View>
         </View>
-      ) : (
-        <Text style={styles.placeholderText}>No image selected</Text>
-      )}
-    </View>
+
+        <View style={styles.buttonRow}>
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.nativeButton]} 
+            onPress={handleCropPickerGallery}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.buttonIcon}>📱</Text>
+            <Text style={styles.buttonLabel}>Gallery</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.nativeButton]} 
+            onPress={handleCropPickerCamera}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.buttonIcon}>📷</Text>
+            <Text style={styles.buttonLabel}>Camera</Text>
+          </TouchableOpacity>
+        </View>
+
+        {cropPickerImage ? (
+          <View style={styles.mediaPreview}>
+            <View style={styles.mediaHeader}>
+              <Text style={styles.mediaTitle}>✓ Selected Image</Text>
+              <TouchableOpacity 
+                style={styles.clearButtonSmall}
+                onPress={() => setCropPickerImage('')}
+              >
+                <Text style={styles.clearIcon}>×</Text>
+              </TouchableOpacity>
+            </View>
+            <Image
+              source={{ uri: cropPickerImage }}
+              style={styles.previewImage}
+              resizeMode="cover"
+            />
+          </View>
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyIcon}>🖼️</Text>
+            <Text style={styles.emptyText}>No image selected</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Expo Image Picker Section */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardTitleContainer}>
+            <Text style={styles.cardTitle}>⚡ Expo Image Picker</Text>
+            <Text style={styles.cardSubtitle}>Quick setup with managed workflow</Text>
+          </View>
+          <View style={styles.expoBadge}>
+            <Text style={styles.badgeText}>EXPO</Text>
+          </View>
+        </View>
+
+        <View style={styles.buttonRow}>
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.expoButton]} 
+            onPress={handleExpoPickerGallery}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.buttonIcon}>📱</Text>
+            <Text style={[styles.buttonLabel, styles.expoButtonText]}>Gallery</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.expoButton]} 
+            onPress={handleExpoPickerCamera}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.buttonIcon}>📷</Text>
+            <Text style={[styles.buttonLabel, styles.expoButtonText]}>Camera</Text>
+          </TouchableOpacity>
+        </View>
+
+        {expoPickerImage ? (
+          <View style={styles.mediaPreview}>
+            <View style={styles.mediaHeader}>
+              <Text style={styles.mediaTitle}>✓ Selected Image</Text>
+              <TouchableOpacity 
+                style={styles.clearButtonSmall}
+                onPress={() => setExpoPickerImage('')}
+              >
+                <Text style={styles.clearIcon}>×</Text>
+              </TouchableOpacity>
+            </View>
+            <Image
+              source={{ uri: expoPickerImage }}
+              style={styles.previewImage}
+              resizeMode="cover"
+            />
+          </View>
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyIcon}>🖼️</Text>
+            <Text style={styles.emptyText}>No image selected</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Video Picker Section */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardTitleContainer}>
+            <Text style={styles.cardTitle}>🎬 Video Recorder</Text>
+            <Text style={styles.cardSubtitle}>Record or upload high-quality videos</Text>
+          </View>
+          <View style={styles.videoBadge}>
+            <Text style={styles.badgeText}>VIDEO</Text>
+          </View>
+        </View>
+
+        <View style={styles.buttonRow}>
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.videoButton]} 
+            onPress={handleCropPickerVideoCamera}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.buttonIcon}>🎥</Text>
+            <Text style={styles.buttonLabel}>Record</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.videoButton]} 
+            onPress={handleCropPickerVideoGallery}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.buttonIcon}>📹</Text>
+            <Text style={styles.buttonLabel}>Upload</Text>
+          </TouchableOpacity>
+        </View>
+
+        {cropPickerVideo ? (
+          <View style={styles.mediaPreview}>
+            <View style={styles.mediaHeader}>
+              <Text style={styles.mediaTitle}>✓ Selected Video</Text>
+              <TouchableOpacity 
+                style={styles.clearButtonSmall}
+                onPress={() => setCropPickerVideo('')}
+              >
+                <Text style={styles.clearIcon}>×</Text>
+              </TouchableOpacity>
+            </View>
+            <Video
+              source={{ uri: cropPickerVideo }}
+              style={styles.previewVideo}
+              useNativeControls
+              resizeMode={ResizeMode.CONTAIN}
+              isLooping
+            />
+          </View>
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyIcon}>🎞️</Text>
+            <Text style={styles.emptyText}>No video selected</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Comparison Card */}
+      <View style={styles.comparisonCard}>
+        <Text style={styles.comparisonTitle}>📊 Feature Comparison</Text>
+        
+        <View style={styles.featureRow}>
+          <View style={styles.featureIcon}>
+            <Text style={styles.featureEmoji}>⚡</Text>
+          </View>
+          <View style={styles.featureContent}>
+            <Text style={styles.featureName}>Performance</Text>
+            <Text style={styles.featureDescription}>Native picker offers better performance for large media files</Text>
+          </View>
+        </View>
+
+        <View style={styles.featureRow}>
+          <View style={styles.featureIcon}>
+            <Text style={styles.featureEmoji}>✂️</Text>
+          </View>
+          <View style={styles.featureContent}>
+            <Text style={styles.featureName}>Built-in Cropping</Text>
+            <Text style={styles.featureDescription}>React Native Crop Picker includes advanced image editing</Text>
+          </View>
+        </View>
+
+        <View style={styles.featureRow}>
+          <View style={styles.featureIcon}>
+            <Text style={styles.featureEmoji}>🚀</Text>
+          </View>
+          <View style={styles.featureContent}>
+            <Text style={styles.featureName}>Easy Setup</Text>
+            <Text style={styles.featureDescription}>Expo picker requires minimal configuration</Text>
+          </View>
+        </View>
+
+        <View style={styles.featureRow}>
+          <View style={styles.featureIcon}>
+            <Text style={styles.featureEmoji}>🎥</Text>
+          </View>
+          <View style={styles.featureContent}>
+            <Text style={styles.featureName}>Video Support</Text>
+            <Text style={styles.featureDescription}>Both libraries support video recording and selection</Text>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#F5F7FA',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#333',
+  scrollContent: {
+    padding: CARD_PADDING,
+    paddingBottom: 40,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    gap: 15,
-    marginBottom: 30,
+  header: {
+    marginBottom: 32,
+    marginTop: Platform.OS === 'ios' ? 20 : 40,
   },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 8,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#1A202C',
+    marginBottom: 8,
+    letterSpacing: -0.5,
   },
-  buttonText: {
-    color: '#fff',
+  headerSubtitle: {
     fontSize: 16,
+    color: '#718096',
+    fontWeight: '500',
+    lineHeight: 22,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: CARD_GAP,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  cardHeader: {
+    marginBottom: 20,
+  },
+  cardTitleContainer: {
+    marginBottom: 12,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#2D3748',
+    marginBottom: 4,
+  },
+  cardSubtitle: {
+    fontSize: 13,
+    color: '#A0AEC0',
+    fontWeight: '500',
+  },
+  nativeBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#3B82F6',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  expoBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#8B5CF6',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  videoBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 20,
+  },
+  actionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 14,
+    gap: 8,
+  },
+  nativeButton: {
+    backgroundColor: '#3B82F6',
+  },
+  expoButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#8B5CF6',
+  },
+  videoButton: {
+    backgroundColor: '#EF4444',
+  },
+  buttonIcon: {
+    fontSize: 20,
+  },
+  buttonLabel: {
+    color: '#FFFFFF',
+    fontSize: 15,
     fontWeight: '600',
   },
-  imageContainer: {
+  expoButtonText: {
+    color: '#8B5CF6',
+  },
+  mediaPreview: {
+    marginTop: 8,
+  },
+  mediaHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 12,
+  },
+  mediaTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#10B981',
+  },
+  clearButtonSmall: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#FEE2E2',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  clearIcon: {
+    fontSize: 20,
+    color: '#EF4444',
+    fontWeight: '600',
+  },
+  previewImage: {
     width: '100%',
+    height: 280,
+    borderRadius: 14,
+    backgroundColor: '#F3F4F6',
   },
-  imageLabel: {
-    fontSize: 16,
-    marginBottom: 10,
-    color: '#666',
+  previewVideo: {
+    width: '100%',
+    height: 280,
+    borderRadius: 14,
+    backgroundColor: '#000000',
   },
-  image: {
-    width: 300,
-    height: 400,
-    borderRadius: 10,
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 48,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 14,
     borderWidth: 2,
-    borderColor: '#ddd',
+    borderColor: '#E5E7EB',
+    borderStyle: 'dashed',
   },
-  placeholderText: {
+  emptyIcon: {
+    fontSize: 48,
+    marginBottom: 12,
+    opacity: 0.5,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: '#9CA3AF',
+    fontWeight: '500',
+  },
+  comparisonCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 24,
+    marginTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  comparisonTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#2D3748',
+    marginBottom: 20,
+  },
+  featureRow: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    alignItems: 'flex-start',
+  },
+  featureIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#F0F4FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  featureEmoji: {
+    fontSize: 22,
+  },
+  featureContent: {
+    flex: 1,
+    paddingTop: 2,
+  },
+  featureName: {
     fontSize: 16,
-    color: '#999',
-    fontStyle: 'italic',
+    fontWeight: '600',
+    color: '#2D3748',
+    marginBottom: 4,
+  },
+  featureDescription: {
+    fontSize: 13,
+    color: '#718096',
+    lineHeight: 18,
   },
 });
+
+
 
 export default index;
