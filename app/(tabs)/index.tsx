@@ -1909,6 +1909,7 @@
 
 import { ResizeMode, Video } from 'expo-av';
 import * as ExpoImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -2054,6 +2055,54 @@ const index = () => {
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
     >
+
+      <TouchableOpacity 
+        onPress={() => {
+          console.log('ProfessionalStatsScreen');
+          router.push('/professionalStatsScreen');
+        }}
+        style={{
+          backgroundColor: '#3B82F6',
+          paddingVertical: 14,
+          paddingHorizontal: 24,
+          borderRadius: 12,
+          marginBottom: 12,
+          alignItems: 'center',
+          shadowColor: '#3B82F6',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 5,
+        }}
+      >
+        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>
+          Professional Stats Screen
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        onPress={() => {
+          console.log('userStatsScreen');
+          router.push('/userStatsScreen');
+        }}
+        style={{
+          backgroundColor: '#10B981',
+          paddingVertical: 14,
+          paddingHorizontal: 24,
+          borderRadius: 12,
+          marginBottom: 20,
+          alignItems: 'center',
+          shadowColor: '#10B981',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 5,
+        }}
+      >
+        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>
+          User Stats Screen
+        </Text>
+      </TouchableOpacity>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Media Picker Studio</Text>
