@@ -1962,9 +1962,8 @@ const index = () => {
   const handleCropPickerGallery = async () => {
     try {
       const image = await ImagePicker.openPicker({
-        width: 1920,
-        height: 2560,
         cropping: true,
+        freeStyleCropEnabled: true, // Allows user to freely resize crop area to any ratio
         compressImageQuality: 1,
         compressImageMaxWidth: 1920,
         compressImageMaxHeight: 2560,
@@ -2055,6 +2054,30 @@ const index = () => {
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
     >
+
+            <TouchableOpacity 
+        onPress={() => {
+          console.log('analyticsScreen');
+          router.push('/analyticsScreen');
+        }}
+        style={{
+          backgroundColor: '#3B82F6',
+          paddingVertical: 14,
+          paddingHorizontal: 24,
+          borderRadius: 12,
+          marginBottom: 12,
+          alignItems: 'center',
+          shadowColor: '#3B82F6',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 5,
+        }}
+      >
+        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>
+          Professional New analyticsScreen Screen
+        </Text>
+      </TouchableOpacity>
 
       <TouchableOpacity 
         onPress={() => {
